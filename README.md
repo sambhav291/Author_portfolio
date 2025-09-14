@@ -1,22 +1,21 @@
-# Web simulation of UbuntuOS
+# Author Portfolio Website
 
-This is a personal portfolio website of theme Ubuntu 20.04, made using Next.js & tailwind CSS.
-If you want to edit this. Clone this project and edit the files in `/src/components`.
+This is a professional author portfolio website with an Ubuntu-themed interface, made using Next.js & Tailwind CSS.
+This template is perfect for showcasing books, author biography, events, and contact information.
 
-To run this on localhost
-type `npm start` and when u are done coding type `npm run build` to build your app.
+To run this on localhost:
+- Type `npm run dev` to start development mode
+- When you are done coding, type `npm run build` to build your app
 
-_NOTE: if you have yarn just replace `npm start` and `npm run build` with `yarn start` and `yarn build`._
-
-<a href="https://www.buymeacoffee.com/vivek9patel" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me A Coffee" style="height: 40px !important;width: 140px !important;" ></a>
+_NOTE: if you have yarn, replace `npm run dev` and `npm run build` with `yarn dev` and `yarn build`._
 
 ### To make the contact form work
 
-- Create a account in [emailjs](https://www.emailjs.com/) create also new Outlook or Gmail account to be able
-  to send email.
+- Create an account in [emailjs](https://www.emailjs.com/) and create a new Outlook or Gmail account to be able
+  to send emails.
 - Create a new service, select and log in to your newly created outlook or gmail account on EmailJS.
 - Go back to the dashboard and get the Service ID copy it.
-- Create a .env file in your root folder and put
+- Create a .env.local file in your root folder and add:
 
 ```
 
@@ -26,17 +25,22 @@ NEXT_PUBLIC_SERVICE_ID = 'YOUR_SERVICE_ID'
 
 ```
 
-into it. Replace \*your user id and your service ID with your values in your EmailJS service.
+Replace YOUR_USER_ID and YOUR_SERVICE_ID with your values from your EmailJS service.
 
-## Star History
+## Features
 
-[![Star History Chart](https://api.star-history.com/svg?repos=vivek9patel/vivek9patel.github.io&type=Date)](https://star-history.com/#vivek9patel/vivek9patel.github.io&Date)
+- Professional author portfolio design
+- Book showcase with purchase links
+- Author biography section
+- Events and contact pages
+- Responsive design
+- Ubuntu-themed interface
 
-## This project was made using Create Next App! Here is the scripts that u can run.
+## This project was made using Next.js! Here are the scripts you can run:
 
-### `npm start`
+### `npm run dev`
 
-Runs the app in the development mode.\
+Runs the app in development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 
 The page will reload if you make edits.\
@@ -50,11 +54,9 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
 ## Contributing
 
-Contributions are what make the open source community such an amazing place to be learn, inspire, and create. Any contributiors who wants to make this website better can make contribution,which will be **greatly appreciated**.
+Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributors who want to make this website better can make contributions, which will be **greatly appreciated**.
 
 1. Fork the Project
 2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)

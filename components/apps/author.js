@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import ReactGA from 'react-ga4';
+import BookCard from '../util components/BookCard';
 
-export class AuthorPortfolio extends Component {
+export class AboutAuthor extends Component {
 
     constructor() {
         super();
@@ -16,30 +17,55 @@ export class AuthorPortfolio extends Component {
     componentDidMount() {
         this.screens = {
             "about": <AuthorAbout />,
-            "education": <Education />,
-            "skills": <Skills />,
-            "projects": <Projects />,
+            "books": <BookList />,
+            "events": <Events />,
+            "contact": <ContactAuthor />,
             "resume": <Resume />,
         }
 
         let lastVisitedScreen = localStorage.getItem("about-section");
-        if (lastVisitedScreen === null || lastVisitedScreen === undefined) {
+        if (lastVisitedScreen === null || lastVisitedScreen === undefined || !this.screens[lastVisitedScreen]) {
             lastVisitedScreen = "about";
         }
 
-        // focus last visited screen
-        this.changeScreen(document.getElementById(lastVisitedScreen));
+        // Set initial screen state
+        this.setState({
+            screen: this.screens[lastVisitedScreen],
+            active_screen: lastVisitedScreen
+        });
+
+        // focus last visited screen element if it exists
+        const screenElement = document.getElementById(lastVisitedScreen);
+        if (screenElement) {
+            this.changeScreen(screenElement);
+        } else {
+            this.changeScreen("about");
+        }
     }
 
     changeScreen = (e) => {
-        const screen = e.id || e.target.id;
+        // Handle both element and event objects
+        let screen;
+        if (typeof e === 'string') {
+            screen = e;
+        } else if (e && e.target) {
+            screen = e.target.id || e.target.closest('[id]')?.id;
+        } else if (e && e.id) {
+            screen = e.id;
+        } else {
+            screen = 'about'; // fallback to about
+        }
+
+        // Ensure we have a valid screen
+        if (!screen || !this.screens[screen]) {
+            screen = 'about';
+        }
 
         // store this state
         localStorage.setItem("about-section", screen);
 
         // google analytics
         ReactGA.send({ hitType: "pageview", page: `/${screen}`, title: "Custom Title" });
-
 
         this.setState({
             screen: this.screens[screen],
@@ -54,28 +80,28 @@ export class AuthorPortfolio extends Component {
     renderNavLinks = () => {
         return (
             <>
-                <div id="about" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "about" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                <div id="about" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "about" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-pointer outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
                     <img className=" w-3 md:w-4" alt="about author" src="./themes/Yaru/status/about.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">About Me</span>
+                    <span className=" ml-1 md:ml-2 text-gray-50 ">About the Author</span>
                 </div>
-                <div id="education" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "education" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="author education" src="./themes/Yaru/status/education.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Education</span>
+                <div id="books" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "books" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-pointer outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                    <img className=" w-3 md:w-4" alt="author books" src="./themes/Yaru/status/projects.svg" />
+                    <span className=" ml-1 md:ml-2 text-gray-50 ">Books</span>
                 </div>
-                <div id="skills" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "skills" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="author skills" src="./themes/Yaru/status/skills.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Skills</span>
+                <div id="events" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "events" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-pointer outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                    <img className=" w-3 md:w-4" alt="author events" src="./themes/Yaru/status/experience.svg" />
+                    <span className=" ml-1 md:ml-2 text-gray-50 ">Events</span>
                 </div>
-                <div id="projects" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "projects" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="author projects" src="./themes/Yaru/status/projects.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Projects</span>
+                <div id="contact" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "contact" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-pointer outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                    <img className=" w-3 md:w-4" alt="contact author" src="./themes/Yaru/status/contact.svg" />
+                    <span className=" ml-1 md:ml-2 text-gray-50 ">Contact</span>
                 </div>
-                <div id="resume" tabIndex="0" onFocus={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-default outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
-                    <img className=" w-3 md:w-4" alt="author resume" src="./themes/Yaru/status/download.svg" />
-                    <span className=" ml-1 md:ml-2 text-gray-50 ">Resume</span>
+                <div id="resume" tabIndex="0" onFocus={this.changeScreen} onClick={this.changeScreen} className={(this.state.active_screen === "resume" ? " bg-ub-orange bg-opacity-100 hover:bg-opacity-95" : " hover:bg-gray-50 hover:bg-opacity-5 ") + " w-28 md:w-full md:rounded-none rounded-sm cursor-pointer outline-none py-1.5 focus:outline-none duration-100 my-0.5 flex justify-start items-center pl-2 md:pl-2.5"}>
+                    <img className=" w-3 md:w-4" alt="author biography" src="./themes/Yaru/status/download.svg" />
+                    <span className=" ml-1 md:ml-2 text-gray-50 ">Biography</span>
                 </div>
                 <div className='my-0.5 w-28 md:w-full h-8 px-2 md:px-2.5 flex' >
-                    <iframe src="https://github.com/sponsors/authorportfolio/button" title="Sponsor Author Portfolio" width={"100%"} height={"100%"} ></iframe>
+                    <iframe src="https://github.com/sponsors/vivek9patel/button" title="Support the author" width={"100%"} height={"100%"} ></iframe>
                 </div>
             </>
         );
@@ -103,10 +129,10 @@ export class AuthorPortfolio extends Component {
     }
 }
 
-export default AuthorPortfolio;
+export default AboutAuthor;
 
-export const displayAuthorPortfolio = () => {
-    return <AuthorPortfolio />;
+export const displayAboutAuthor = () => {
+    return <AboutAuthor />;
 }
 
 
@@ -252,169 +278,480 @@ function Skills() {
 }
 
 function Projects() {
-    const project_list = [
+    const book_list = [
         {
-            name: "UbuntuOS Portfolio",
-            date: "Apr 2021",
-            link: "https://github.com/vivek9patel/vivek9patel.github.io",
-            description: [
-                "Personal portfolio website of theme Ubuntu 20.04, made using NEXT.js & tailwind CSS",
-            ],
-            domains: ["javascript", "next.js", "tailwindcss"]
+            title: "Whispers of the Ocean",
+            coverImage: null, // Will use placeholder
+            synopsis: "A haunting tale of three women across different decades, connected by a mysterious lighthouse and the secrets it holds. Set against the backdrop of a small coastal town, this novel explores themes of love, loss, and the enduring power of family bonds.",
+            publicationDate: "March 2023",
+            purchaseLink: "https://www.amazon.com/whispers-ocean-elena-rodriguez/dp/1234567890"
         },
         {
-            name: "Chrome Extension React Bolierplate",
-            date: "Dec 2021",
-            link: "https://github.com/vivek9patel/chrome-extension-react-boilerplate",
-            description: [
-                "A boilerplate code to build a chrome extension with react and webpack",
-            ],
-            domains: ["javascript", "chrome-extension"]
+            title: "The Garden of Lost Memories",
+            coverImage: null,
+            synopsis: "When Clara inherits her grandmother's botanical garden, she discovers hidden letters that reveal a love story spanning two continents and five decades. A beautiful exploration of memory, heritage, and the stories that shape us.",
+            publicationDate: "September 2022",
+            purchaseLink: "https://www.amazon.com/garden-lost-memories-elena-rodriguez/dp/1234567891"
         },
         {
-            name: "CodeConnect",
-            date: "Nov 2021",
-            link: "https://github.com/vivek9patel/CodeConnect-frontend",
-            description: [
-                "A multi-language pair-programming platform with the features of video meeting and whiteboard. Built with React.js, Tailwind CSS, Chakra UI, Express & Socket.io.",
-            ],
-            domains: ["javascript", "tailwindcss"]
+            title: "Dancing with Shadows",
+            coverImage: null,
+            synopsis: "In 1960s Buenos Aires, a young dancer must choose between following her dreams and protecting her family's secrets. A passionate story of art, politics, and the courage to pursue one's truth.",
+            publicationDate: "June 2021",
+            purchaseLink: "https://www.amazon.com/dancing-shadows-elena-rodriguez/dp/1234567892"
         },
         {
-            name: "Ad Free Spotify",
-            date: "Jun 2021",
-            link: "https://github.com/vivek9patel/ad-free-spotify",
-            description: [
-                "Chrome extension to automatically mute/unmute Spotify tab when Advertisement starts and ends!",
-            ],
-            domains: ["javascript", "chrome-extension"]
+            title: "The Language of Rain",
+            coverImage: null,
+            synopsis: "A poetic novel about a translator who discovers that some stories can only be told in the language of the heart. Set in modern-day Seattle, it's a meditation on communication, culture, and connection.",
+            publicationDate: "November 2020",
+            purchaseLink: "https://www.amazon.com/language-rain-elena-rodriguez/dp/1234567893"
         },
         {
-            name: "economist.com Unlocked",
-            date: "Mar 2021",
-            link: "https://github.com/vivek9patel/economist.com-unlocked",
-            description: [
-                "A chrome extension to read Paid Articles for Free & with no Ads, no subscription, no memberships!",
-            ],
-            domains: ["javascript", "chrome-extension"]
+            title: "Echoes in the Valley",
+            coverImage: null,
+            synopsis: "A multi-generational saga following a Mexican-American family as they navigate identity, tradition, and change across four generations in California's Central Valley.",
+            publicationDate: "April 2019",
+            purchaseLink: "https://www.amazon.com/echoes-valley-elena-rodriguez/dp/1234567894"
         },
         {
-            name: "Flutter banking app",
-            date: "Jan 2021",
-            link: "https://github.com/vivek9patel/flutter-banking-app",
-            description: [
-                "A Flutter & Firebase project for creating transactions between different Users and displaying the history of transactions done by all.",
-            ],
-            domains: ["flutter", "firestore", "dart", "firebase auth"]
-        },
-        {
-            name: "CPU scheduling application",
-            date: "Dec 2020",
-            link: "https://github.com/vivek9patel/CPU-Scheduling-APP-React-Native",
-            description: [
-                "React Native Application to visualize the CPU Scheduling algorithms with different Processes and Animations with gannt chart.",
-            ],
-            domains: ["react-native", "javascript"]
-        },
-        {
-            name: "Meditech Healthcare WebApp",
-            date: "Nov 2020",
-            link: "https://github.com/vivek9patel/Meditech-Healthcare",
-            description: [
-                "Developed Web Application to predict and diagnose diseases from x-ray images.",
-            ],
-            domains: ["javascript", "html5", "sass", "firebase", "tensorflow"]
-        },
-        {
-            name: "Problem Recommendation System",
-            date: "Sep 2020",
-            link: "https://github.com/vivek9patel/Improve-Codeforces",
-            description: [
-                "Django web application to suggest practice problems from the areas in which the user struggles to get pass in code-forces.",
-            ],
-            domains: ["django", "python", "codeforces-api", "javascript"]
-        },
-        {
-            name: "Cleanliness Automation",
-            date: "Dec 2019",
-            link: "https://github.com/vivek9patel/CPU-Scheduling-APP-React-Native",
-            description: [
-                "Developed Web Applications to automate Garbage collection and extraction systems for SSIP hackathon",
-            ],
+            title: "The Mapmaker's Daughter",
+            coverImage: null,
+            synopsis: "In 1920s Morocco, the daughter of a French cartographer embarks on a journey that will challenge everything she believes about love, duty, and the boundaries between worlds.",
+            publicationDate: "August 2018",
+            purchaseLink: "https://www.amazon.com/mapmakers-daughter-elena-rodriguez/dp/1234567895"
         }
     ];
 
-    const tag_colors = {
-        "javascript": "yellow-300",
-        "firebase": "red-600",
-        "firestore": "red-500",
-        "firebase auth": "red-400",
-        "chrome-extension": "yellow-400",
-        "flutter": "blue-400",
-        "dart": "blue-500",
-        "react-native": "purple-500",
-        "html5": "pink-600",
-        "sass": "pink-400",
-        "tensorflow": "yellow-600",
-        "django": "green-600",
-        "python": "green-200",
-        "codeforces-api": "gray-300",
-        "tailwindcss": "blue-300",
-        "next.js": "purple-600"
+    const genre_colors = {
+        "contemporary fiction": "blue-300",
+        "historical fiction": "amber-300",
+        "literary fiction": "purple-300",
+        "family saga": "green-300",
+        "romance": "pink-300",
+        "mystery": "gray-300",
+        "thriller": "red-300",
+        "memoir": "indigo-300"
     }
 
     return (
         <>
             <div className=" font-medium relative text-2xl mt-2 md:mt-4 mb-4">
-                Projects
+                Published Books
                 <div className="absolute pt-px bg-white mt-px top-full w-full">
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
                     <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
                 </div>
             </div>
-            <iframe src="https://github.com/sponsors/vivek9patel/card" title="Sponsor vivek9patel" className='my-4 w-5/6 md:w-3/4' ></iframe>
+            <div className="text-sm md:text-base text-gray-300 mb-6">
+                A collection of novels exploring themes of family, identity, and the human experience across cultures and generations.
+            </div>
 
-            {
-                project_list.map((project, index) => {
-                    const projectNameFromLink = project.link.split('/')
-                    const projectName = projectNameFromLink[projectNameFromLink.length - 1]
-                    return (
-                        <a key={index} href={project.link} target="_blank" rel="noreferrer" className="flex w-full flex-col px-4">
-                            <div className="w-full py-1 px-2 my-2 border border-gray-50 border-opacity-10 rounded hover:bg-gray-50 hover:bg-opacity-5 cursor-pointer">
-                                <div className="flex flex-wrap justify-between items-center">
-                                    <div className='flex justify-center items-center'>
-                                        <div className=" text-base md:text-lg mr-2">{project.name.toLowerCase()}</div>
-                                        <iframe src={`https://ghbtns.com/github-btn.html?user=vivek9patel&repo=${projectName}&type=star&count=true`} frameBorder="0" scrolling="0" width="150" height="20" title={project.name.toLowerCase()+"-star"}></iframe>
-                                    </div>
-                                    <div className="text-gray-300 font-light text-sm">{project.date}</div>
-                                </div>
-                                <ul className=" tracking-normal leading-tight text-sm font-light ml-4 mt-1">
-                                    {
-                                        project.description.map((desc, index) => {
-                                            return <li key={index} className="list-disc mt-1 text-gray-100">{desc}</li>;
-                                        })
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
+                {
+                    book_list.map((book, index) => {
+                        return (
+                            <BookCard
+                                key={index}
+                                imageUrl={book.coverImage}
+                                title={book.title}
+                                synopsis={book.synopsis}
+                                year={book.publicationDate}
+                                onClick={() => {
+                                    if (book.purchaseLink) {
+                                        window.open(book.purchaseLink, '_blank', 'noopener,noreferrer');
                                     }
-                                </ul>
-                                <div className="flex flex-wrap items-start justify-start text-xs py-2">
-                                    {
-                                        (project.domains ?
-                                            project.domains.map((domain, index) => {
-                                                return <span key={index} className={`px-1.5 py-0.5 w-max border border-${tag_colors[domain]} text-${tag_colors[domain]} m-1 rounded-full`}>{domain}</span>
-                                            })
-
-                                            : null)
-                                    }
-                                </div>
-                            </div>
-                        </a>
-                    )
-                })
-            }
+                                }}
+                                className="bg-gray-800 border-gray-700 text-white hover:bg-gray-700"
+                            />
+                        )
+                    })
+                }
+            </div>
         </>
     )
 }
 function Resume() {
     return (
-        <iframe className="h-full w-full" src="./files/Vivek-Patel-Resume.pdf" title="vivek patel resume" frameBorder="0"></iframe>
+        <iframe className="h-full w-full" src="./files/Author-Biography.pdf" title="author biography" frameBorder="0"></iframe>
     )
+}
+
+// BookList Component - Renders a list of BookCard components
+function BookList() {
+    const books = [
+        {
+            id: 1,
+            imageUrl: null, // Will use placeholder
+            title: "Whispers of the Ocean",
+            synopsis: "A haunting tale of three women across different decades, connected by a mysterious lighthouse and the secrets it holds. Set against the backdrop of a small coastal town, this novel explores themes of love, loss, and the enduring power of family bonds.",
+            author: "Elena Rodriguez",
+            year: "2023",
+            genre: "Contemporary Fiction"
+        },
+        {
+            id: 2,
+            imageUrl: null,
+            title: "The Garden of Lost Memories",
+            synopsis: "When Clara inherits her grandmother's botanical garden, she discovers hidden letters that reveal a love story spanning two continents and five decades. A beautiful exploration of memory, heritage, and the stories that shape us.",
+            author: "Elena Rodriguez",
+            year: "2022",
+            genre: "Historical Fiction"
+        },
+        {
+            id: 3,
+            imageUrl: null,
+            title: "Dancing with Shadows",
+            synopsis: "In 1960s Buenos Aires, a young dancer must choose between following her dreams and protecting her family's secrets. A passionate story of art, politics, and the courage to pursue one's truth.",
+            author: "Elena Rodriguez",
+            year: "2021",
+            genre: "Historical Fiction"
+        },
+        {
+            id: 4,
+            imageUrl: null,
+            title: "The Language of Rain",
+            synopsis: "A poetic novel about a translator who discovers that some stories can only be told in the language of the heart. Set in modern-day Seattle, it's a meditation on communication, culture, and connection.",
+            author: "Elena Rodriguez",
+            year: "2020",
+            genre: "Literary Fiction"
+        },
+        {
+            id: 5,
+            imageUrl: null,
+            title: "Echoes in the Valley",
+            synopsis: "A multi-generational saga following a Mexican-American family as they navigate identity, tradition, and change across four generations in California's Central Valley.",
+            author: "Elena Rodriguez",
+            year: "2019",
+            genre: "Family Saga"
+        },
+        {
+            id: 6,
+            imageUrl: null,
+            title: "The Mapmaker's Daughter",
+            synopsis: "In 1920s Morocco, the daughter of a French cartographer embarks on a journey that will challenge everything she believes about love, duty, and the boundaries between worlds.",
+            author: "Elena Rodriguez",
+            year: "2018",
+            genre: "Historical Fiction"
+        }
+    ];
+
+    return (
+        <>
+            <div className="font-medium relative text-2xl mt-2 md:mt-4 mb-6">
+                Published Books
+                <div className="absolute pt-px bg-white mt-px top-full w-full">
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+                </div>
+            </div>
+            
+            <div className="text-sm md:text-base text-gray-300 mb-6">
+                A collection of novels exploring themes of family, identity, and the human experience across cultures and generations.
+            </div>
+
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
+                {books.map((book) => (
+                    <BookCard 
+                        key={book.id}
+                        imageUrl={book.imageUrl}
+                        title={book.title}
+                        synopsis={book.synopsis}
+                        author={book.author}
+                        year={book.year}
+                        genre={book.genre}
+                        onClick={() => console.log(`Selected book: ${book.title}`)}
+                        className="transform hover:scale-105 transition-transform duration-200"
+                    />
+                ))}
+            </div>
+        </>
+    );
+}
+
+// Events Component - Lists upcoming events and readings
+function Events() {
+    const upcomingEvents = [
+        {
+            id: 1,
+            title: "Book Reading & Signing",
+            subtitle: "Whispers of the Ocean",
+            date: "October 15, 2025",
+            time: "7:00 PM - 9:00 PM",
+            location: "Powell's City of Books, Portland",
+            address: "1005 W Burnside St, Portland, OR",
+            description: "Join Elena for an intimate reading from her latest novel, followed by a Q&A session and book signing.",
+            type: "Reading",
+            status: "upcoming"
+        },
+        {
+            id: 2,
+            title: "Writers' Workshop",
+            subtitle: "Crafting Multi-Generational Stories",
+            date: "October 28, 2025",
+            time: "2:00 PM - 5:00 PM",
+            location: "Literary Arts Center",
+            address: "925 SW Washington St, Portland, OR",
+            description: "A hands-on workshop exploring techniques for writing compelling family sagas that span generations.",
+            type: "Workshop",
+            status: "upcoming"
+        },
+        {
+            id: 3,
+            title: "Virtual Book Club Discussion",
+            subtitle: "The Garden of Lost Memories",
+            date: "November 10, 2025",
+            time: "6:00 PM - 7:30 PM",
+            location: "Online Event (Zoom)",
+            address: "Virtual",
+            description: "A virtual discussion about the themes and inspiration behind Elena's acclaimed novel.",
+            type: "Virtual",
+            status: "upcoming"
+        },
+        {
+            id: 4,
+            title: "Literary Festival Panel",
+            subtitle: "Voices of Contemporary Fiction",
+            date: "November 22, 2025",
+            time: "3:00 PM - 4:30 PM",
+            location: "Oregon Literary Festival",
+            address: "Portland State University",
+            description: "Panel discussion with fellow contemporary fiction authors about the future of storytelling.",
+            type: "Panel",
+            status: "upcoming"
+        }
+    ];
+
+    const pastEvents = [
+        {
+            id: 5,
+            title: "Author Interview",
+            subtitle: "Portland Book Review Podcast",
+            date: "September 5, 2025",
+            description: "Discussed writing process and inspirations behind recent works.",
+            type: "Interview",
+            status: "past"
+        },
+        {
+            id: 6,
+            title: "Summer Reading Series",
+            subtitle: "Dancing with Shadows",
+            date: "August 12, 2025",
+            location: "Pioneer Courthouse Square",
+            description: "Reading as part of Portland's annual summer reading series.",
+            type: "Reading",
+            status: "past"
+        }
+    ];
+
+    return (
+        <>
+            <div className="font-medium relative text-2xl mt-2 md:mt-4 mb-6">
+                Events & Readings
+                <div className="absolute pt-px bg-white mt-px top-full w-full">
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+                </div>
+            </div>
+
+            {/* Upcoming Events */}
+            <div className="mb-8">
+                <h3 className="font-serif text-xl font-semibold text-gray-200 mb-4">Upcoming Events</h3>
+                <div className="space-y-6">
+                    {upcomingEvents.map((event) => (
+                        <div key={event.id} className="bg-gray-800 bg-opacity-50 border border-gray-700 rounded-lg p-6 hover:bg-opacity-70 transition-all duration-200">
+                            <div className="flex flex-col md:flex-row md:justify-between md:items-start mb-3">
+                                <div>
+                                    <h4 className="font-serif text-lg font-semibold text-white mb-1">{event.title}</h4>
+                                    <p className="text-ubt-blue font-medium text-sm">{event.subtitle}</p>
+                                </div>
+                                <div className="mt-2 md:mt-0">
+                                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                                        event.type === 'Reading' ? 'bg-blue-100 text-blue-800' :
+                                        event.type === 'Workshop' ? 'bg-green-100 text-green-800' :
+                                        event.type === 'Virtual' ? 'bg-purple-100 text-purple-800' :
+                                        'bg-yellow-100 text-yellow-800'
+                                    }`}>
+                                        {event.type}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <div className="grid md:grid-cols-2 gap-4 mb-3 text-sm text-gray-300">
+                                <div>
+                                    <span className="font-medium">Date:</span> {event.date}
+                                </div>
+                                <div>
+                                    <span className="font-medium">Time:</span> {event.time}
+                                </div>
+                                <div>
+                                    <span className="font-medium">Location:</span> {event.location}
+                                </div>
+                                <div>
+                                    <span className="font-medium">Address:</span> {event.address}
+                                </div>
+                            </div>
+                            
+                            <p className="text-gray-200 text-sm leading-relaxed">{event.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* Past Events */}
+            <div>
+                <h3 className="font-serif text-xl font-semibold text-gray-200 mb-4">Recent Past Events</h3>
+                <div className="space-y-4">
+                    {pastEvents.map((event) => (
+                        <div key={event.id} className="bg-gray-900 bg-opacity-30 border border-gray-800 rounded-lg p-4">
+                            <div className="flex justify-between items-start mb-2">
+                                <div>
+                                    <h4 className="font-serif font-semibold text-gray-300 mb-1">{event.title}</h4>
+                                    <p className="text-ubt-blue text-sm">{event.subtitle}</p>
+                                </div>
+                                <span className="text-gray-400 text-sm">{event.date}</span>
+                            </div>
+                            {event.location && (
+                                <p className="text-gray-400 text-sm mb-2">{event.location}</p>
+                            )}
+                            <p className="text-gray-300 text-sm">{event.description}</p>
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </>
+    );
+}
+
+// ContactAuthor Component - Simple contact form
+function ContactAuthor() {
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        // Handle form submission here
+        console.log('Contact form submitted');
+    };
+
+    return (
+        <>
+            <div className="font-medium relative text-2xl mt-2 md:mt-4 mb-6">
+                Get In Touch
+                <div className="absolute pt-px bg-white mt-px top-full w-full">
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 left-full"></div>
+                    <div className="bg-white absolute rounded-full p-0.5 md:p-1 top-0 transform -translate-y-1/2 right-full"></div>
+                </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+                {/* Contact Information */}
+                <div className="space-y-6">
+                    <div>
+                        <h3 className="font-serif text-xl font-semibold text-gray-200 mb-4">Let's Connect</h3>
+                        <p className="text-gray-300 leading-relaxed mb-6">
+                            I love hearing from readers, fellow writers, and book clubs. Whether you have 
+                            questions about my work, want to discuss a potential collaboration, or simply 
+                            want to share your thoughts on one of my books, I'd love to hear from you.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        <div className="flex items-center">
+                            <div className="w-5 h-5 bg-ubt-blue rounded-full mr-3 flex items-center justify-center">
+                                <span className="text-white text-xs">@</span>
+                            </div>
+                            <span className="text-gray-200">elena.rodriguez.author@gmail.com</span>
+                        </div>
+                        <div className="flex items-center">
+                            <div className="w-5 h-5 bg-ubt-blue rounded-full mr-3 flex items-center justify-center">
+                                <span className="text-white text-xs">#</span>
+                            </div>
+                            <span className="text-gray-200">@ElenaRodriguezBooks</span>
+                        </div>
+                        <div className="flex items-center">
+                            <div className="w-5 h-5 bg-ubt-blue rounded-full mr-3 flex items-center justify-center">
+                                <span className="text-white text-xs">📍</span>
+                            </div>
+                            <span className="text-gray-200">Portland, Oregon</span>
+                        </div>
+                        <div className="flex items-center">
+                            <div className="w-5 h-5 bg-ubt-blue rounded-full mr-3 flex items-center justify-center">
+                                <span className="text-white text-xs">📚</span>
+                            </div>
+                            <span className="text-gray-200">Available for book clubs & readings</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Contact Form */}
+                <div className="bg-gray-800 bg-opacity-50 p-6 rounded-lg border border-gray-700">
+                    <h3 className="font-serif text-xl font-semibold text-gray-200 mb-4">Send a Message</h3>
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                        <div>
+                            <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                                Your Name
+                            </label>
+                            <input 
+                                type="text" 
+                                id="name"
+                                name="name"
+                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-ubt-blue focus:border-transparent"
+                                placeholder="Enter your name"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                                Your Email
+                            </label>
+                            <input 
+                                type="email" 
+                                id="email"
+                                name="email"
+                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-ubt-blue focus:border-transparent"
+                                placeholder="Enter your email"
+                                required
+                            />
+                        </div>
+                        <div>
+                            <label htmlFor="subject" className="block text-sm font-medium text-gray-300 mb-2">
+                                Subject
+                            </label>
+                            <select 
+                                id="subject"
+                                name="subject"
+                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-ubt-blue focus:border-transparent"
+                                required
+                            >
+                                <option value="">Select a subject</option>
+                                <option value="general">General Inquiry</option>
+                                <option value="bookclub">Book Club Discussion</option>
+                                <option value="interview">Interview Request</option>
+                                <option value="event">Event Invitation</option>
+                                <option value="collaboration">Collaboration</option>
+                                <option value="feedback">Book Feedback</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                                Your Message
+                            </label>
+                            <textarea 
+                                id="message"
+                                name="message"
+                                rows="4" 
+                                className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-md text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-ubt-blue focus:border-transparent resize-none"
+                                placeholder="Write your message here..."
+                                required
+                            ></textarea>
+                        </div>
+                        <button 
+                            type="submit" 
+                            className="w-full bg-ubt-blue hover:bg-opacity-90 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200"
+                        >
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </>
+    );
 }
