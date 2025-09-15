@@ -45,6 +45,12 @@ export default class Clock extends Component {
             display_time = day + " " + month + " " + date;
         }
         else display_time = day + " " + month + " " + date + " " + hour + ":" + minute + " " + meridiem;
-        return <span>{display_time}</span>;
+        
+        return (
+            <span className="font-serif font-medium tracking-wider text-primary drop-shadow-sm">
+                {display_time}
+            </span>
+        );
     }
+}
 }
