@@ -45,7 +45,7 @@ export default class AuthorPortfolio extends Component {
                     
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex space-x-8">
-                        {['About', 'Books', 'Biography', 'Reviews', 'Contact'].map((item) => (
+                        {['About', 'Books', 'Expertise', 'Testimonials', 'Contact'].map((item) => (
                             <button 
                                 key={item}
                                 onClick={() => this.changeSection(item.toLowerCase())}
@@ -154,9 +154,9 @@ export default class AuthorPortfolio extends Component {
                 return <AboutSection />;
             case 'books':
                 return <BooksSection />;
-            case 'biography':
+            case 'expertise':
                 return <BiographySection />;
-            case 'reviews':
+            case 'testimonials':
                 return <ReviewsSection />;
             case 'contact':
                 return <ContactSection />;
@@ -235,10 +235,10 @@ function BooksSection() {
 function BiographySection() {
     return (
         <div className="prose prose-lg max-w-none">
-            <h2 className="font-serif text-3xl font-bold text-maroon-dark mb-8">Biography</h2>
+            <h2 className="font-serif text-3xl font-bold text-maroon-dark mb-8">Who am I ?</h2>
             <div className="space-y-8">
                 <div className="bg-glass-golden p-8 rounded-lg shadow-elegant">
-                    <h3 className="font-serif text-2xl font-bold text-maroon-dark mb-4">Early Life & Education</h3>
+                    <h3 className="font-serif text-2xl font-bold text-maroon-dark mb-4">Global Speaker & Thought Leader</h3>
                     <p className="font-sans text-royal-dark leading-relaxed mb-4">
                         {authorConfig.biography.earlyLife}
                     </p>
@@ -248,7 +248,7 @@ function BiographySection() {
                 </div>
                 
                 <div className="bg-glass-golden p-8 rounded-lg shadow-elegant">
-                    <h3 className="font-serif text-2xl font-bold text-maroon-dark mb-4">Literary Journey</h3>
+                    <h3 className="font-serif text-2xl font-bold text-maroon-dark mb-4">Speaking Expertise & Skills</h3>
                     <p className="font-sans text-royal-dark leading-relaxed">
                         {authorConfig.biography.career}
                     </p>
